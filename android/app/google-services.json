@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "911299518969",
+    "firebase_url": "https://petso-25ea2.firebaseio.com",
+    "project_id": "petso-25ea2",
+    "storage_bucket": "petso-25ea2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:911299518969:android:ce1a87734c5e1f43",
+        "android_client_info": {
+          "package_name": "com.macbook.petso"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "911299518969-04ln6memjat0rpej23emtt4k6idlhubj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.macbook.petso",
+            "certificate_hash": "acf52c12fb140e9b1f8c715d97610519b025617d"
+          }
+        },
+        {
+          "client_id": "911299518969-ugots1t7hcuh4iaalrgn3ms89qil2lj9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBXNlJfQpqG8Bv_Wx5aEClWWwjI726P6TM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "911299518969-ugots1t7hcuh4iaalrgn3ms89qil2lj9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
