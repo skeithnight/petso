@@ -69,12 +69,13 @@ class LoginScreenState extends State<LoginScreen> {
       idToken: googleAuth.idToken,
     );
     if (firebaseUser != null) {
+      // print('not null');
       // Check is already sign up
 
       DataSnapshot dataSnapshot =
           await mainReference.child("users").child(firebaseUser.uid).once();
       if (dataSnapshot.value == null) {
-        print("ada");
+        // print("ada");
         mainReference.child("users").child(firebaseUser.uid).set({
           'name': firebaseUser.displayName,
           'photoUrl': firebaseUser.photoUrl,
@@ -88,6 +89,7 @@ class LoginScreenState extends State<LoginScreen> {
         _prefs.setString('phoneNumber', firebaseUser.phoneNumber);
         _prefs.commit();
       } else {
+        // print('kosong');
         _prefs.setString('id', dataSnapshot.key);
         _prefs.setString('name', dataSnapshot.value['name']);
         _prefs.setString('photoUrl', dataSnapshot.value['photoUrl']);

@@ -23,6 +23,14 @@
           }
         },
         {
+          "client_id": "911299518969-47j4tp3vgen97dhttj6ui259rupj4g2i.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.macbook.petso",
+            "certificate_hash": "0986237f5008676fe824307e31f1377a6e86b600"
+          }
+        },
+        {
           "client_id": "911299518969-ugots1t7hcuh4iaalrgn3ms89qil2lj9.apps.googleusercontent.com",
           "client_type": 3
         }

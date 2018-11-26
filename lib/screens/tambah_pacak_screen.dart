@@ -1,4 +1,11 @@
 import 'package:flutter/material.dart';
+import 'dart:convert';
+
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:petso/models/detail_hewan_model.dart';
+import 'package:petso/models/detail_pacak_hewan.dart';
+import 'widgets/common_divided_widget.dart';
 
 import 'main_screen.dart';
 
@@ -7,7 +14,26 @@ class TambahPacakScreen extends StatefulWidget {
 }
 
 class _TambahPacakScreenState extends State<TambahPacakScreen> {
+  String id;
+  int pilihan;
+  SharedPreferences prefs;
+  List<DetailHewanModel> listDetailHewan;
+  DetailPacakHewan detailPacakHewan = new DetailPacakHewan();
   bool isLoading = false;
+
+  void initState() {
+    super.initState();
+    getData();
+  }
+
+  void getData() async {
+    prefs = await SharedPreferences.getInstance();
+    setState(() {
+      id = prefs.getString('id') ?? '';
+    });
+    // print("id: $id");
+  }
+
   void tampilDialog(String tittle, String message) {
     showDialog(
       barrierDismissible: true,
@@ -25,10 +51,8 @@ class _TambahPacakScreenState extends State<TambahPacakScreen> {
                 if (tittle == "Failed") {
                   Navigator.of(context).pop();
                 } else if (tittle == "Success") {
-                  Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => MainScreen()));
+                  Navigator.pushReplacement(context,
+                      MaterialPageRoute(builder: (context) => MainScreen()));
                 }
               },
             ),
@@ -38,6 +62,158 @@ class _TambahPacakScreenState extends State<TambahPacakScreen> {
     );
   }
 
+  Widget listDataHewanWidget() {
+    return StreamBuilder<Event>(
+        stream: FirebaseDatabase.instance
+            .reference()
+            .child("users")
+            .child(id)
+            .child("pets")
+            .onValue,
+        builder: (BuildContext context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return new Center(
+              child: CircularProgressIndicator(),
+            );
+          } else {
+            if (snapshot.hasData) {
+              // print(json.encode(snapshot.data.snapshot.value));
+              listDetailHewan = new List();
+              Map<dynamic, dynamic> map = snapshot.data.snapshot.value;
+              List<dynamic> list2 = map.keys.toList();
+              List<dynamic> list = map.values.toList();
+              for (var i = 0; i < list.length; i++) {
+                listDetailHewan
+                    .add(new DetailHewanModel.fromSnapshot(list[i], list2[i]));
+              }
+              return showListData();
+            }
+            print("Kosong");
+            return new Center(
+              child: Text("kosong"),
+            );
+          }
+        });
+  }
+
+  Widget showListData() {
+    return ListView.builder(
+        itemCount: listDetailHewan.length,
+        itemBuilder: (BuildContext context, int index) => Card(
+              color: index == pilihan ? Colors.green : Colors.white,
+              elevation: 5.0,
+              child: ListTile(
+                onTap: () {
+                  setState(() {
+                    pilihan = index;
+                    detailPacakHewan.detailHewanModel = listDetailHewan[index];
+                  });
+                  print(json.encode(detailPacakHewan.detailHewanModel));
+                },
+                leading: Container(
+                  width: 50.0,
+                  height: 50.0,
+                  decoration: new BoxDecoration(
+                    shape: BoxShape.circle,
+                    image: new DecorationImage(
+                      fit: BoxFit.fill,
+                      image: new NetworkImage(
+                          'https://www.akc.org/wp-content/themes/akc/component-library/assets//img/welcome.jpg'),
+                    ),
+                  ),
+                ),
+                title: Text(listDetailHewan[index].petName.toUpperCase()),
+                // subtitle: Text(index.toString())
+                subtitle: Column(
+                  textDirection: TextDirection.ltr,
+                  children: <Widget>[
+                    Container(
+                      width: double.infinity,
+                      child: Text(
+                        listDetailHewan[index].type,
+                        textAlign: TextAlign.start,
+                      ),
+                    ),
+                    Container(
+                      width: double.infinity,
+                      child: Text(
+                        listDetailHewan[index].race,
+                        textAlign: TextAlign.start,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ));
+  }
+
+  Widget choicePetCard() => Container(
+      width: double.infinity,
+      child: Card(
+          elevation: 10.0,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  "Choice your pet",
+                  style: TextStyle(
+                    fontSize: 20.0,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                SizedBox(
+                  height: 5.0,
+                ),
+                Container(
+                  height: 200.0,
+                  child: listDataHewanWidget(),
+                ),
+              ],
+            ),
+          )));
+  Widget lokasiPacak() => Container(
+      width: double.infinity,
+      child: Card(
+          elevation: 10.0,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  "Pick Location",
+                  style: TextStyle(
+                    fontSize: 20.0,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                SizedBox(
+                  height: 5.0,
+                ),
+                Container(
+                  height: 200.0,
+                  // child: listDataHewanWidget(),
+                ),
+              ],
+            ),
+          )));
+  Widget content() => new Column(
+        mainAxisSize: MainAxisSize.max,
+        children: <Widget>[
+          choicePetCard(),
+          CommonDivider(),
+          SizedBox(
+            height: 5.0,
+          ),
+          lokasiPacak(),
+          CommonDivider(),
+          SizedBox(
+            height: 20.0,
+          ),
+        ],
+      );
   Widget saveButton() => new Container(
         margin: EdgeInsets.all(10.0),
         child: Align(
@@ -59,8 +235,7 @@ class _TambahPacakScreenState extends State<TambahPacakScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: 
-       new AppBar(
+      appBar: new AppBar(
         title: new Text("Pacak Hewan"),
       ),
       body: Column(
@@ -68,10 +243,9 @@ class _TambahPacakScreenState extends State<TambahPacakScreen> {
         children: <Widget>[
           Expanded(
             flex: 8,
-            // child: Container(),
             child: SingleChildScrollView(
               child: Stack(children: <Widget>[
-                // detailHewanContent(),
+                content(),
                 Positioned(
                   child: isLoading
                       ? Container(
