@@ -5,6 +5,7 @@ import 'package:google_places_picker/google_places_picker.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:gplacespicker/gplacespicker.dart';
 
 import 'package:petso/models/detail_hewan_model.dart';
 import 'package:petso/models/detail_pacak_hewan.dart';
@@ -17,6 +18,8 @@ class TambahPacakScreen extends StatefulWidget {
 }
 
 class _TambahPacakScreenState extends State<TambahPacakScreen> {
+  String latLng = "";
+
   String id;
   int pilihan;
   SharedPreferences prefs;
@@ -229,6 +232,12 @@ class _TambahPacakScreenState extends State<TambahPacakScreen> {
                 ),
                 RaisedButton(
                   child: Text("Pick Location"),
+                  // onPressed: () async {
+                  //   String latLng = await Gplacespicker.openPlacePicker();
+                  //   setState(() {
+                  //     this.latLng = latLng;
+                  //   });
+                  // },
                   onPressed: () {
                     try {
                       _showPlacePicker();

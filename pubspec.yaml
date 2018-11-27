@@ -25,11 +25,13 @@ dependencies:
   fluttertoast: ^2.1.1
   shared_preferences: ^0.4.3
   image_picker: ^0.4.10
-  google_places_picker: ^0.0.9
+  gplacespicker: ^0.0.1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
+  google_places_picker: ^0.0.9 
 
 
 # For information on the generic Dart part of this file, see the
