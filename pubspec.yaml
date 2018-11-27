@@ -25,6 +25,7 @@ dependencies:
   fluttertoast: ^2.1.1
   shared_preferences: ^0.4.3
   image_picker: ^0.4.10
+  google_places_picker: ^0.0.9
 
 dev_dependencies:
   flutter_test:

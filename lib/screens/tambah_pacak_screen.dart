@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
+import 'package:flutter/services.dart';
+import 'package:google_places_picker/google_places_picker.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_database/firebase_database.dart';
+
 import 'package:petso/models/detail_hewan_model.dart';
 import 'package:petso/models/detail_pacak_hewan.dart';
 import 'widgets/common_divided_widget.dart';
-
+import 'package:petso/data.dart' as data;
 import 'main_screen.dart';
 
 class TambahPacakScreen extends StatefulWidget {
@@ -20,6 +23,7 @@ class _TambahPacakScreenState extends State<TambahPacakScreen> {
   List<DetailHewanModel> listDetailHewan;
   DetailPacakHewan detailPacakHewan = new DetailPacakHewan();
   bool isLoading = false;
+  Place _place;
 
   void initState() {
     super.initState();
@@ -32,6 +36,36 @@ class _TambahPacakScreenState extends State<TambahPacakScreen> {
       id = prefs.getString('id') ?? '';
     });
     // print("id: $id");
+  }
+
+  // Platform messages are asynchronous, so we initialize in an async method.
+  _showPlacePicker() async {
+    // Platform messages may fail, so we use a try/catch PlatformException.
+    Place place = await PluginGooglePlacePicker.showPlacePicker();
+
+    // If the widget was removed from the tree while the asynchronous platform
+    // message was in flight, we want to discard the reply rather than calling
+    // setState to update our non-existent appearance.
+    if (!mounted) return;
+
+    setState(() {
+      _place = place;
+    });
+  }
+
+  _showAutocomplete() async {
+    // Platform messages may fail, so we use a try/catch PlatformException.
+    Place place = await PluginGooglePlacePicker.showAutocomplete(
+        PlaceAutocompleteMode.MODE_OVERLAY);
+
+    // If the widget was removed from the tree while the asynchronous platform
+    // message was in flight, we want to discard the reply rather than calling
+    // setState to update our non-existent appearance.
+    if (!mounted) return;
+
+    setState(() {
+      _place = place;
+    });
   }
 
   void tampilDialog(String tittle, String message) {
@@ -189,12 +223,29 @@ class _TambahPacakScreenState extends State<TambahPacakScreen> {
                     fontWeight: FontWeight.w700,
                   ),
                 ),
+                CommonDivider(),
+                SizedBox(
+                  height: 5.0,
+                ),
+                RaisedButton(
+                  child: Text("Pick Location"),
+                  onPressed: () {
+                    try {
+                      _showPlacePicker();
+                    } catch (e) {
+                      tampilDialog("Alert", "Failed to load location");
+                    }
+                  },
+                ),
+                CommonDivider(),
                 SizedBox(
                   height: 5.0,
                 ),
                 Container(
                   height: 200.0,
-                  // child: listDataHewanWidget(),
+                  child: _place == null
+                      ? Center(child: CircularProgressIndicator())
+                      : Text(_place.address),
                 ),
               ],
             ),
