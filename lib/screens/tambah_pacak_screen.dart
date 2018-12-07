@@ -8,10 +8,10 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:gplacespicker/gplacespicker.dart';
 
 import 'package:petso/models/detail_hewan_model.dart';
-import 'package:petso/models/detail_pacak_hewan.dart';
 import 'widgets/common_divided_widget.dart';
 import 'package:petso/data.dart' as data;
 import 'main_screen.dart';
+import 'package:petso/models/pacak_model.dart';
 
 class TambahPacakScreen extends StatefulWidget {
   _TambahPacakScreenState createState() => _TambahPacakScreenState();
@@ -23,10 +23,13 @@ class _TambahPacakScreenState extends State<TambahPacakScreen> {
   String id;
   int pilihan;
   SharedPreferences prefs;
+  final mainReference = FirebaseDatabase.instance.reference();
   List<DetailHewanModel> listDetailHewan;
-  DetailPacakHewan detailPacakHewan = new DetailPacakHewan();
+  DetailHewanModel detailHewanModel = new DetailHewanModel();
   bool isLoading = false;
+  bool isLoadingSubmitData = false;
   Place _place;
+  PacakModel pacakModel = new PacakModel();
 
   void initState() {
     super.initState();
@@ -143,9 +146,9 @@ class _TambahPacakScreenState extends State<TambahPacakScreen> {
                 onTap: () {
                   setState(() {
                     pilihan = index;
-                    detailPacakHewan.detailHewanModel = listDetailHewan[index];
+                    detailHewanModel = listDetailHewan[index];
                   });
-                  print(json.encode(detailPacakHewan.detailHewanModel));
+                  // print(json.encode(detailHewanModel));
                 },
                 leading: Container(
                   width: 50.0,
@@ -230,21 +233,22 @@ class _TambahPacakScreenState extends State<TambahPacakScreen> {
                 SizedBox(
                   height: 5.0,
                 ),
-                RaisedButton(
-                  child: Text("Pick Location"),
-                  // onPressed: () async {
-                  //   String latLng = await Gplacespicker.openPlacePicker();
-                  //   setState(() {
-                  //     this.latLng = latLng;
-                  //   });
-                  // },
-                  onPressed: () {
-                    try {
-                      _showPlacePicker();
-                    } catch (e) {
-                      tampilDialog("Alert", "Failed to load location");
-                    }
-                  },
+                Container(
+                  width: double.infinity,
+                  child: RaisedButton(
+                    color: Colors.green,
+                    child: Text(
+                      "Pick Location",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    onPressed: () {
+                      try {
+                        _showPlacePicker();
+                      } catch (e) {
+                        tampilDialog("Alert", "Failed to load location");
+                      }
+                    },
+                  ),
                 ),
                 CommonDivider(),
                 SizedBox(
@@ -274,6 +278,33 @@ class _TambahPacakScreenState extends State<TambahPacakScreen> {
           ),
         ],
       );
+
+  void _saveData() {
+    setState(() {
+      isLoadingSubmitData = true;
+    });
+    if (_place == null || detailHewanModel == null) {
+      setState(() {
+        isLoadingSubmitData = false;
+      });
+      tampilDialog("Failed", "Data location or pet is empty");
+    } else {
+      mainReference.child("pacak").push().set({
+        "users": id,
+        "detailHewan": detailHewanModel.toJson(),
+        "lokasiPacak": {
+          "latitude": _place.latitude,
+          "longitude": _place.longitude,
+          "address": _place.address
+        }
+      }).then((response) {
+        tampilDialog("Success", "Your data has been save");
+      }).catchError((onError) {
+        tampilDialog("Failed", onError.toString());
+      });
+    }
+  }
+
   Widget saveButton() => new Container(
         margin: EdgeInsets.all(10.0),
         child: Align(
@@ -287,7 +318,7 @@ class _TambahPacakScreenState extends State<TambahPacakScreen> {
                 "Save",
                 style: TextStyle(color: Colors.white),
               ),
-              // onPressed: _saveData,
+              onPressed: _saveData,
             ),
           ),
         ),
@@ -321,7 +352,9 @@ class _TambahPacakScreenState extends State<TambahPacakScreen> {
           ),
           Expanded(
             flex: 1,
-            child: saveButton(),
+            child: isLoadingSubmitData
+                ? Center(child: CircularProgressIndicator())
+                : saveButton(),
           ),
         ],
       ),

@@ -404,7 +404,7 @@ class _DetailHewanScreenState extends State<DetailHewanScreen> {
         child: DecoratedBox(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20.0),
-            color: Colors.lightBlue,
+            color: Colors.white,
             boxShadow: <BoxShadow>[
               BoxShadow(
                   color: Colors.black12,

@@ -22,6 +22,17 @@ class DetailHewanModel {
         race = snapshot["race"],
         furColor = snapshot["furColor"];
 
+  DetailHewanModel.fromData(Map<dynamic, dynamic> snapshot)
+      : idPet = snapshot["idPet"],
+        photoUrlPet = snapshot["photoUrlPet"],
+        petName = snapshot["petName"],
+        identity = snapshot["identity"],
+        gender = snapshot["gender"],
+        age = snapshot["age"],
+        type = snapshot["type"],
+        race = snapshot["race"],
+        furColor = snapshot["furColor"];
+
   toJson() {
     return {
       "idPet": idPet,
