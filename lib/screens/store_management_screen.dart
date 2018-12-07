@@ -18,7 +18,7 @@ class _StoreManagementScreenState extends State<StoreManagementScreen> {
                   children: <Widget>[
                     new Expanded(
                         child: new ListView(
-                          children: _getData(snapshot),
+                          // children: _getData(snapshot),
                         ))
                   ],
                 );
@@ -27,14 +27,14 @@ class _StoreManagementScreenState extends State<StoreManagementScreen> {
               }
             }
           }
-        )
+        );
   }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        body: loadData,
+        // body: loadData,
       ),
     );
   }
