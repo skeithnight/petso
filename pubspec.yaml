@@ -28,8 +28,9 @@ dependencies:
   gplacespicker: ^0.0.1
   intl: ^0.15.7
   flutter_map:
-  geolocator:
-  latlong:
+  geolocator: ^2.1.1
+  haversine: ^1.0.2
+  
 
 dev_dependencies:
   flutter_test:

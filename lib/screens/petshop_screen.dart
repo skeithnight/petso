@@ -2,12 +2,15 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import 'package:geolocator/geolocator.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:haversine/haversine.dart';
 
 import 'detail_hewan_screen.dart';
 import 'detail_product_screen.dart';
 import 'package:petso/models/detail_toko_model.dart';
+import 'map_screen.dart';
 import 'store_screen.dart';
 
 class PetshopScreen extends StatefulWidget {
@@ -16,17 +19,40 @@ class PetshopScreen extends StatefulWidget {
 
 class _PetshopScreenState extends State<PetshopScreen> {
   List<DetailTokoModel> listToko;
+  Position _position = null;
 
   void initState() {
     super.initState();
+
+    _initPlatformState();
+  }
+
+  // Platform messages are asynchronous, so we initialize in an async method.
+  void _initPlatformState() async {
+    Position position;
+    // Platform messages may fail, so we use a try/catch PlatformException.
+    try {
+      // Geolocator geolocator = Geolocator()..forceAndroidLocationManager = true;
+      position = await Geolocator()
+          .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+      // print(json.encode(fetchPost()));
+    } on Exception {
+      print("object");
+      position = null;
+    }
+    // print(position.latitude.toString() + " : " + position.longitude.toString());
+    // If the widget was removed from the tree while the asynchronous platform
+    // message was in flight, we want to discard the reply rather than calling
+    // setState to update our non-existent appearance.
+    if (!mounted) return;
+    setState(() {
+      _position = position;
+    });
   }
 
   Widget listDataTokoWidget() {
     return StreamBuilder<Event>(
-        stream: FirebaseDatabase.instance
-            .reference()
-            .child("store")
-            .onValue,
+        stream: FirebaseDatabase.instance.reference().child("store").onValue,
         builder: (BuildContext context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return new Center(
@@ -71,9 +97,22 @@ class _PetshopScreenState extends State<PetshopScreen> {
                 },
                 title: Text(listToko[index].namaToko.toUpperCase()),
                 // subtitle: Text(index.toString())
-                subtitle: Text(listToko[index].lokasiPacakModel.address), trailing: Text("3.5 KM"),
+                subtitle: Text(listToko[index].lokasiPacakModel.address),
+                trailing: _position == null
+                    ? CircularProgressIndicator()
+                    : tampilJarak(listToko[index].lokasiPacakModel.latitude, listToko[index].lokasiPacakModel.longitude),
               ),
             ));
+  }
+
+  Widget tampilJarak(lat,lon) {
+    if(_position !=null){
+    final harvesine = new Haversine.fromDegrees(
+        latitude1: lat, longitude1: lon, latitude2: _position.latitude, longitude2: _position.longitude);
+        int result = (harvesine.distance()/1000).floor();
+        return Text(result.toString()+" Km");
+    }
+    return Text("-");
   }
 
   @override
@@ -86,16 +125,16 @@ class _PetshopScreenState extends State<PetshopScreen> {
           child: Container(
         child: listDataTokoWidget(),
       )),
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: () {
-      //     Navigator.push(
-      //         context,
-      //         MaterialPageRoute(
-      //             builder: (context) => DetailProductScreen('add', null)));
-      //   },
-      //   tooltip: 'Increment',
-      //   child: Icon(Icons.add),
-      // ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => MapsScreen(listToko)));
+        },
+        tooltip: 'Lokasi Toko',
+        child: Icon(Icons.map),
+      ),
     );
   }
 }

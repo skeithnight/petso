@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
+import 'package:geolocator/geolocator.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -14,6 +15,32 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  Position _position;
+  @override
+  void initState() {
+    super.initState();
+    _initPlatformState();
+  }
+
+  // Platform messages are asynchronous, so we initialize in an async method.
+  void _initPlatformState() async {
+    Position position;
+    // Platform messages may fail, so we use a try/catch PlatformException.
+    try {
+      // Geolocator geolocator = Geolocator()..forceAndroidLocationManager = true;
+      position = await Geolocator()
+          .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+      print("position");
+    } on Exception {
+      print("object");
+      position = null;
+    }
+    print(position.latitude.toString()+" : "+ position.longitude.toString());
+    // If the widget was removed from the tree while the asynchronous platform
+    // message was in flight, we want to discard the reply rather than calling
+    // setState to update our non-existent appearance.
+    if (!mounted) return;
+  }
   Widget _handleCurrentScreen() {
     return StreamBuilder<FirebaseUser>(
         stream: FirebaseAuth.instance.onAuthStateChanged,
