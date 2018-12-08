@@ -7,18 +7,18 @@ import 'package:image_picker/image_picker.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:petso/models/detail_hewan_model.dart';
+import 'package:petso/models/product_model.dart';
 import 'kelola_hewan_screen.dart';
 
-class DetailHewanScreen extends StatefulWidget {
-  DetailHewanModel detailHewanModel;
+class DetailProductScreen extends StatefulWidget {
+  ProductModel _productModel;
   final String level;
-  DetailHewanScreen(this.level, this.detailHewanModel);
-  _DetailHewanScreenState createState() => _DetailHewanScreenState();
+  DetailProductScreen(this.level, this._productModel);
+  _DetailProductScreenState createState() => _DetailProductScreenState();
 }
 
-class _DetailHewanScreenState extends State<DetailHewanScreen> {
-  DetailHewanModel _detailHewanModel = new DetailHewanModel();
+class _DetailProductScreenState extends State<DetailProductScreen> {
+  ProductModel productModel = new ProductModel();
   bool isLoading = false;
   File _image;
   String id;
@@ -30,11 +30,12 @@ class _DetailHewanScreenState extends State<DetailHewanScreen> {
     super.initState();
     getData();
     if (widget.level != 'add') {
-      this._detailHewanModel = widget.detailHewanModel;
+      this.productModel = widget._productModel;
     }
   }
 
   void getData() async {
+    print(widget.level);
     prefs = await SharedPreferences.getInstance();
     setState(() {
       id = prefs.getString('id') ?? '';
@@ -52,13 +53,10 @@ class _DetailHewanScreenState extends State<DetailHewanScreen> {
   }
 
   _saveData() {
-    if (_detailHewanModel.petName == null ||
-        _detailHewanModel.identity == null ||
-        _detailHewanModel.age == null ||
-        _detailHewanModel.gender == null ||
-        _detailHewanModel.type == null ||
-        _detailHewanModel.race == null ||
-        _detailHewanModel.furColor == null) {
+    if (productModel.namaProduct == null ||
+        productModel.typeProduct == null ||
+        productModel.descriptionProduct == null ||
+        productModel.hargaProduct == null) {
       // print(json.encode(_detailHewanModel));
       tampilDialog("Failed", "Please complete all fill!");
     } else {
@@ -66,23 +64,23 @@ class _DetailHewanScreenState extends State<DetailHewanScreen> {
       if (widget.level == 'add') {
         // print('addd');
         mainReference
-            .child("users")
+            .child("store")
             .child(id)
-            .child("pets")
+            .child("product")
             .push()
-            .set(_detailHewanModel.toJson())
+            .set(productModel.toJson())
             .then((response) {
           tampilDialog("Success", "Your data has been save");
         });
       } else {
-        if (_detailHewanModel.idPet != null) {
+        if (productModel.idProduct != null) {
           // print('edit');
           mainReference
-              .child("users")
+              .child("store")
               .child(id)
-              .child("pets")
-              .child(_detailHewanModel.idPet)
-              .set(_detailHewanModel.toJson())
+              .child("product")
+              .child(productModel.idProduct)
+              .set(productModel.toJson())
               .then((response) {
             tampilDialog("Success", "Your data has been save");
           });
@@ -108,10 +106,10 @@ class _DetailHewanScreenState extends State<DetailHewanScreen> {
                 if (tittle == "Failed") {
                   Navigator.of(context).pop();
                 } else if (tittle == "Success") {
-                  Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => KelolaHewanScreen()));
+                  // Navigator.pushReplacement(
+                  //     context,
+                  //     MaterialPageRoute(
+                  //         builder: (context) => List()));
                 }
               },
             ),
@@ -124,11 +122,11 @@ class _DetailHewanScreenState extends State<DetailHewanScreen> {
   Widget appbar() {
     if (widget.level == "add") {
       return new AppBar(
-        title: new Text("Tambah Hewan Peliharaan"),
+        title: new Text("Add Product"),
       );
     } else {
       return new AppBar(
-        title: new Text("Detail Hewan Peliharaan"),
+        title: new Text("Detail Product"),
       );
     }
   }
@@ -137,25 +135,30 @@ class _DetailHewanScreenState extends State<DetailHewanScreen> {
       Column(mainAxisSize: MainAxisSize.max, children: <Widget>[
         // image
         new Center(
-          child: _image == null
-              ? new Container(
-                  height: 100.0,
-                  child: RaisedButton(
-                    onPressed: getImage,
-                    child: Text('Pick Image'),
-                  ))
-              : new Container(
-                  height: 100.0,
-                  child: InkWell(
-                    child: Image.file(_image),
-                    onTap: getImage,
-                  )),
-        ),
-        // pet name
+            child: _image == null
+                ? widget.level == "Detail"
+                    ? new Container(
+                        height: 100.0,
+                        child: RaisedButton(
+                          onPressed: getImage,
+                          child: Text('Pick Image'),
+                        ))
+                    : new Container(
+                        height: 100.0,
+                        child: Image.network(
+                            "https://shop-cdn-m.shpp.ext.zooplus.io/bilder/royal/canin/maxi/adult/8/400/80729_pla_royalcanin_maxiadult_15kg_hs_01_8.jpg"),
+                      )
+                : new Container(
+                    height: 100.0,
+                    child: InkWell(
+                      child: Image.file(_image),
+                      onTap: getImage,
+                    ))),
+        // name
         Container(
           width: double.infinity,
           child: Text(
-            'Pet Name',
+            'Product Name',
             textAlign: TextAlign.start,
             style: TextStyle(
               fontStyle: FontStyle.italic,
@@ -168,15 +171,16 @@ class _DetailHewanScreenState extends State<DetailHewanScreen> {
           child: Theme(
             data: Theme.of(context).copyWith(),
             child: TextField(
+              enabled: widget.level == "Detail" ? true : false,
               onChanged: (text) {
                 setState(() {
-                  this._detailHewanModel.petName = text;
+                  this.productModel.namaProduct = text;
                 });
               },
               decoration: InputDecoration(
-                hintText: this._detailHewanModel.petName == null
+                hintText: this.productModel.namaProduct == null
                     ? ""
-                    : this._detailHewanModel.petName,
+                    : this.productModel.namaProduct,
                 contentPadding: new EdgeInsets.all(5.0),
                 hintStyle: TextStyle(color: Colors.black),
               ),
@@ -184,44 +188,11 @@ class _DetailHewanScreenState extends State<DetailHewanScreen> {
           ),
           margin: EdgeInsets.only(left: 30.0, right: 30.0),
         ),
-        // pet Identity
+        // type
         Container(
           width: double.infinity,
           child: Text(
-            'Pet Identity',
-            textAlign: TextAlign.start,
-            style: TextStyle(
-              fontStyle: FontStyle.italic,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          margin: EdgeInsets.only(left: 10.0, bottom: 5.0, top: 10.0),
-        ),
-        Container(
-          child: Theme(
-            data: Theme.of(context).copyWith(),
-            child: TextField(
-              onChanged: (text) {
-                setState(() {
-                  this._detailHewanModel.identity = text;
-                });
-              },
-              decoration: InputDecoration(
-                hintText: this._detailHewanModel.identity == null
-                    ? ""
-                    : this._detailHewanModel.identity,
-                contentPadding: new EdgeInsets.all(5.0),
-                hintStyle: TextStyle(color: Colors.black),
-              ),
-            ),
-          ),
-          margin: EdgeInsets.only(left: 30.0, right: 30.0),
-        ),
-        // pet gender
-        Container(
-          width: double.infinity,
-          child: Text(
-            'Pet Gender',
+            'Product Type',
             textAlign: TextAlign.start,
             style: TextStyle(
               fontStyle: FontStyle.italic,
@@ -234,30 +205,45 @@ class _DetailHewanScreenState extends State<DetailHewanScreen> {
           width: double.infinity,
           child: Theme(
               data: Theme.of(context).copyWith(),
-              child: new DropdownButton<String>(
-                value: this._detailHewanModel.gender == null
-                    ? 'Select your pet gender'
-                    : this._detailHewanModel.gender,
-                items: <String>['Select your pet gender', 'Male', 'Female']
-                    .map((String value) {
-                  return new DropdownMenuItem<String>(
-                    value: value,
-                    child: new Text(value),
-                  );
-                }).toList(),
-                onChanged: (text) {
-                  setState(() {
-                    this._detailHewanModel.gender = text;
-                  });
-                },
-              )),
+              child: widget.level == "Detail"
+                  ? new DropdownButton<String>(
+                      value: this.productModel.typeProduct == null
+                          ? 'Select product type'
+                          : this.productModel.typeProduct,
+                      items: <String>[
+                        'Select product type',
+                        'Pet Food',
+                        'Accessories',
+                        'Medicine'
+                      ].map((String value) {
+                        return new DropdownMenuItem<String>(
+                          value: value,
+                          child: new Text(value),
+                        );
+                      }).toList(),
+                      onChanged: (text) {
+                        setState(() {
+                          this.productModel.typeProduct = text;
+                        });
+                      },
+                    )
+                  : new TextField(
+                      enabled: false,
+                      decoration: InputDecoration(
+                        hintText: this.productModel.typeProduct == null
+                            ? ""
+                            : this.productModel.typeProduct,
+                        contentPadding: new EdgeInsets.all(5.0),
+                        hintStyle: TextStyle(color: Colors.black),
+                      ),
+                    )),
           margin: EdgeInsets.only(left: 30.0, right: 30.0),
         ),
-        // pet age
+        // Desripction
         Container(
           width: double.infinity,
           child: Text(
-            'Pet Age',
+            'Description',
             textAlign: TextAlign.start,
             style: TextStyle(
               fontStyle: FontStyle.italic,
@@ -268,94 +254,21 @@ class _DetailHewanScreenState extends State<DetailHewanScreen> {
         ),
         Container(
           width: double.infinity,
-          child: Theme(
-              data: Theme.of(context).copyWith(),
-              child: new DropdownButton<String>(
-                value: this._detailHewanModel.age == null
-                    ? 'Select your pet age'
-                    : this._detailHewanModel.age,
-                items: <String>[
-                  'Select your pet age',
-                  '< 1 years',
-                  '1 - 2 years',
-                  '2 - 5 years',
-                  '> 5 years'
-                ].map((String value) {
-                  return new DropdownMenuItem<String>(
-                    value: value,
-                    child: new Text(value),
-                  );
-                }).toList(),
-                onChanged: (text) {
-                  setState(() {
-                    this._detailHewanModel.age = text;
-                  });
-                },
-              )),
-          margin: EdgeInsets.only(left: 30.0, right: 30.0),
-        ),
-        // pet type
-        Container(
-          width: double.infinity,
-          child: Text(
-            'Pet Type',
-            textAlign: TextAlign.start,
-            style: TextStyle(
-              fontStyle: FontStyle.italic,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          margin: EdgeInsets.only(left: 10.0, bottom: 5.0, top: 10.0),
-        ),
-        Container(
-          width: double.infinity,
-          child: Theme(
-              data: Theme.of(context).copyWith(),
-              child: new DropdownButton<String>(
-                value: this._detailHewanModel.type == null
-                    ? 'Select your pet type'
-                    : this._detailHewanModel.type,
-                items: <String>['Select your pet type', 'Dog', 'Cat']
-                    .map((String value) {
-                  return new DropdownMenuItem<String>(
-                    value: value,
-                    child: new Text(value),
-                  );
-                }).toList(),
-                onChanged: (text) {
-                  setState(() {
-                    this._detailHewanModel.type = text;
-                  });
-                },
-              )),
-          margin: EdgeInsets.only(left: 30.0, right: 30.0),
-        ),
-        // pet race
-        Container(
-          width: double.infinity,
-          child: Text(
-            'Pet Race',
-            textAlign: TextAlign.start,
-            style: TextStyle(
-              fontStyle: FontStyle.italic,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          margin: EdgeInsets.only(left: 10.0, bottom: 5.0, top: 10.0),
-        ),
-        Container(
           child: Theme(
             data: Theme.of(context).copyWith(),
             child: TextField(
+              enabled: widget.level == "Detail" ? true : false,
+              maxLines: 5,
+              keyboardType: TextInputType.multiline,
               onChanged: (text) {
                 setState(() {
-                  this._detailHewanModel.race = text;
+                  this.productModel.descriptionProduct = text;
                 });
               },
               decoration: InputDecoration(
-                hintText: this._detailHewanModel.race == null
+                hintText: this.productModel.descriptionProduct == null
                     ? ""
-                    : this._detailHewanModel.race,
+                    : this.productModel.descriptionProduct,
                 contentPadding: new EdgeInsets.all(5.0),
                 hintStyle: TextStyle(color: Colors.black),
               ),
@@ -363,11 +276,11 @@ class _DetailHewanScreenState extends State<DetailHewanScreen> {
           ),
           margin: EdgeInsets.only(left: 30.0, right: 30.0),
         ),
-        // pet fur
+        // Price
         Container(
           width: double.infinity,
           child: Text(
-            'Fur Color',
+            'Price',
             textAlign: TextAlign.start,
             style: TextStyle(
               fontStyle: FontStyle.italic,
@@ -380,15 +293,18 @@ class _DetailHewanScreenState extends State<DetailHewanScreen> {
           child: Theme(
             data: Theme.of(context).copyWith(),
             child: TextField(
+              enabled: widget.level == "Detail" ? true : false,
+              keyboardType: TextInputType.number,
               onChanged: (text) {
                 setState(() {
-                  this._detailHewanModel.furColor = text;
+                  this.productModel.hargaProduct = int.parse(text);
                 });
               },
               decoration: InputDecoration(
-                hintText: this._detailHewanModel.furColor == null
+                prefix: Text("Rp. "),
+                hintText: this.productModel.hargaProduct == null
                     ? ""
-                    : this._detailHewanModel.furColor,
+                    : this.productModel.hargaProduct.toString(),
                 contentPadding: new EdgeInsets.all(5.0),
                 hintStyle: TextStyle(color: Colors.black),
               ),
@@ -398,7 +314,7 @@ class _DetailHewanScreenState extends State<DetailHewanScreen> {
         ),
       ]);
 
-  Widget detailHewanContent() => Container(
+  Widget detailProductContent() => Container(
       margin: EdgeInsets.all(10.0),
       child: Center(
         child: DecoratedBox(
@@ -451,7 +367,7 @@ class _DetailHewanScreenState extends State<DetailHewanScreen> {
             // child: Container(),
             child: SingleChildScrollView(
               child: Stack(children: <Widget>[
-                detailHewanContent(),
+                detailProductContent(),
                 Positioned(
                   child: isLoading
                       ? Container(
@@ -467,7 +383,7 @@ class _DetailHewanScreenState extends State<DetailHewanScreen> {
           ),
           Expanded(
             flex: 1,
-            child: saveButton(),
+            child: widget.level == "Detail" ? saveButton() : Container(),
           ),
         ],
       ),

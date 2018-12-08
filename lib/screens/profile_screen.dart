@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_database/firebase_database.dart';
 
 import 'kelola_hewan_screen.dart';
+import 'store_management_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   _ProfileScreenState createState() => _ProfileScreenState();
@@ -37,7 +38,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       phoneNumber = prefs.getString('phoneNumber') ?? '';
       isLoading = false;
     });
-    print(isLoading);
+    // print(isLoading);
   }
 
   Future<Null> _signOut() async {
@@ -201,12 +202,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
             width: double.infinity,
             height: 50.0,
             child: new RaisedButton(
-              color: Colors.orange,
+              color: Colors.blue,
               child: Text(
                 "Store Management",
                 style: TextStyle(color: Colors.white),
               ),
-              // onPressed: _signOut,
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => StoreManagementScreen()));
+              },
             ),
           ),
         ),

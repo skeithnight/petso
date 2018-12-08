@@ -26,6 +26,10 @@ dependencies:
   shared_preferences: ^0.4.3
   image_picker: ^0.4.10
   gplacespicker: ^0.0.1
+  intl: ^0.15.7
+  flutter_map:
+  geolocator:
+  latlong:
 
 dev_dependencies:
   flutter_test:
