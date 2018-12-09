@@ -7,6 +7,8 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:haversine/haversine.dart';
 
+import 'package:petso/logic/perhitungan.dart';
+
 import 'detail_hewan_screen.dart';
 import 'detail_product_screen.dart';
 import 'package:petso/models/detail_toko_model.dart';
@@ -100,19 +102,16 @@ class _PetshopScreenState extends State<PetshopScreen> {
                 subtitle: Text(listToko[index].lokasiPacakModel.address),
                 trailing: _position == null
                     ? CircularProgressIndicator()
-                    : tampilJarak(listToko[index].lokasiPacakModel.latitude, listToko[index].lokasiPacakModel.longitude),
+                    : Text(Perhitungan()
+                            .hitungJarak(
+                                listToko[index].lokasiPacakModel.latitude,
+                                listToko[index].lokasiPacakModel.longitude,
+                                _position.latitude,
+                                _position.longitude)
+                            .toString() +
+                        " Km"),
               ),
             ));
-  }
-
-  Widget tampilJarak(lat,lon) {
-    if(_position !=null){
-    final harvesine = new Haversine.fromDegrees(
-        latitude1: lat, longitude1: lon, latitude2: _position.latitude, longitude2: _position.longitude);
-        int result = (harvesine.distance()/1000).floor();
-        return Text(result.toString()+" Km");
-    }
-    return Text("-");
   }
 
   @override
@@ -127,10 +126,8 @@ class _PetshopScreenState extends State<PetshopScreen> {
       )),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => MapsScreen(listToko)));
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => MapsScreen(listToko)));
         },
         tooltip: 'Lokasi Toko',
         child: Icon(Icons.map),

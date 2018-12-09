@@ -29,6 +29,7 @@ class _TambahPacakScreenState extends State<TambahPacakScreen> {
   bool isLoading = false;
   bool isLoadingSubmitData = false;
   Place _place;
+  String phoneNumber;
   PacakModel pacakModel = new PacakModel();
 
   void initState() {
@@ -255,10 +256,52 @@ class _TambahPacakScreenState extends State<TambahPacakScreen> {
                   height: 5.0,
                 ),
                 Container(
-                  height: 200.0,
+                  height: 150.0,
                   child: _place == null
                       ? Center(child: CircularProgressIndicator())
                       : Text(_place.address),
+                ),
+              ],
+            ),
+          )));
+  Widget phoneNumberContent() => Container(
+      width: double.infinity,
+      child: Card(
+          elevation: 10.0,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  "Phone Number",
+                  style: TextStyle(
+                    fontSize: 20.0,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                CommonDivider(),
+                SizedBox(
+                  height: 5.0,
+                ),
+                Container(
+                  child: Theme(
+                    data: Theme.of(context).copyWith(),
+                    child: TextField(
+                      onChanged: (text) {
+                        setState(() {
+                          this.phoneNumber = "+62"+text;
+                        });
+                      },
+                      decoration: InputDecoration(
+                        hintText: "Phone Number",
+                        prefix: Text("+62"),
+                        contentPadding: new EdgeInsets.all(5.0),
+                        hintStyle: TextStyle(color: Colors.black),
+                      ),
+                    ),
+                  ),
+                  margin: EdgeInsets.only(left: 30.0, right: 30.0),
                 ),
               ],
             ),
@@ -272,6 +315,11 @@ class _TambahPacakScreenState extends State<TambahPacakScreen> {
             height: 5.0,
           ),
           lokasiPacak(),
+          CommonDivider(),
+          SizedBox(
+            height: 5.0,
+          ),
+          phoneNumberContent(),
           CommonDivider(),
           SizedBox(
             height: 20.0,
@@ -291,6 +339,7 @@ class _TambahPacakScreenState extends State<TambahPacakScreen> {
     } else {
       mainReference.child("pacak").push().set({
         "users": id,
+        "phoneNumber": phoneNumber,
         "detailHewan": detailHewanModel.toJson(),
         "lokasiPacak": {
           "latitude": _place.latitude,

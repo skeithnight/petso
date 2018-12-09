@@ -30,6 +30,7 @@ dependencies:
   flutter_map:
   geolocator: ^2.1.1
   haversine: ^1.0.2
+  url_launcher: ^4.0.2
   
 
 dev_dependencies:
