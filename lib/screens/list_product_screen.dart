@@ -75,11 +75,11 @@ class _ListProductScreenState extends State<ListProductScreen> {
                   if (widget.level != "store-screen") {
                     Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) =>
-                            DetailProductScreen('Detail', listProduct[index])));
+                            DetailProductScreen('edit', listProduct[index])));
                   }else{
                     Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) =>
-                            DetailProductScreen('store-screen', listProduct[index])));
+                            DetailProductScreen('Detail', listProduct[index])));
                   }
                 },
                 leading: Container(

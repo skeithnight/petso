@@ -34,7 +34,7 @@ class _PetshopScreenState extends State<PetshopScreen> {
     Position position;
     // Platform messages may fail, so we use a try/catch PlatformException.
     try {
-      // Geolocator geolocator = Geolocator()..forceAndroidLocationManager = true;
+      Geolocator geolocator = Geolocator()..forceAndroidLocationManager = true;
       position = await Geolocator()
           .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
       // print(json.encode(fetchPost()));
@@ -102,6 +102,7 @@ class _PetshopScreenState extends State<PetshopScreen> {
                 subtitle: Text(listToko[index].lokasiPacakModel.address),
                 trailing: _position == null
                     ? CircularProgressIndicator()
+                    // : Text("ada")
                     : Text(Perhitungan()
                             .hitungJarak(
                                 listToko[index].lokasiPacakModel.latitude,

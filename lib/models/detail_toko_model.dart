@@ -17,14 +17,14 @@ class DetailTokoModel {
       : idToko = id,
         namaToko = snapshot["namaToko"],
         siup = snapshot["siup"],
-        lokasiPacakModel = LokasiPacakModel.fromSnapshot(snapshot["lokasiPacak"]);
+        lokasiPacakModel = LokasiPacakModel.fromSnapshot(snapshot["lokasiToko"]);
 
   toJson() {
     return {
       "id": idToko,
       "namaToko": namaToko,
       "siup": siup,
-      "lokasiPacak": lokasiPacakModel,
+      "lokasiToko": lokasiPacakModel,
     };
   }
 }

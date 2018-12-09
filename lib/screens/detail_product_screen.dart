@@ -106,10 +106,7 @@ class _DetailProductScreenState extends State<DetailProductScreen> {
                 if (tittle == "Failed") {
                   Navigator.of(context).pop();
                 } else if (tittle == "Success") {
-                  // Navigator.pushReplacement(
-                  //     context,
-                  //     MaterialPageRoute(
-                  //         builder: (context) => List()));
+                  Navigator.of(context).pop();
                 }
               },
             ),
@@ -383,7 +380,7 @@ class _DetailProductScreenState extends State<DetailProductScreen> {
           ),
           Expanded(
             flex: 1,
-            child: widget.level == "Detail" ? saveButton() : Container(),
+            child: widget.level == "add"||widget.level == "edit" ? saveButton() : Container(),
           ),
         ],
       ),
