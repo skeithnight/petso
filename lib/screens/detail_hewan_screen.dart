@@ -60,7 +60,7 @@ class _DetailHewanScreenState extends State<DetailHewanScreen> {
         _detailHewanModel.race == null ||
         _detailHewanModel.furColor == null) {
       // print(json.encode(_detailHewanModel));
-      tampilDialog("Failed", "Please complete all fill!");
+      tampilDialog("Gagal", "Tolong lengkapi data!");
     } else {
       // print(json.encode(_detailHewanModel));
       if (widget.level == 'add') {
@@ -72,7 +72,7 @@ class _DetailHewanScreenState extends State<DetailHewanScreen> {
             .push()
             .set(_detailHewanModel.toJson())
             .then((response) {
-          tampilDialog("Success", "Your data has been save");
+          tampilDialog("Sukses", "Data berhasil disimpan...");
         });
       } else {
         if (_detailHewanModel.idPet != null) {
@@ -84,7 +84,7 @@ class _DetailHewanScreenState extends State<DetailHewanScreen> {
               .child(_detailHewanModel.idPet)
               .set(_detailHewanModel.toJson())
               .then((response) {
-            tampilDialog("Success", "Your data has been save");
+            tampilDialog("Sukses", "Data berhasil disimpan...");
           });
         }
       }
@@ -103,11 +103,11 @@ class _DetailHewanScreenState extends State<DetailHewanScreen> {
           actions: <Widget>[
             // usually buttons at the bottom of the dialog
             new FlatButton(
-              child: new Text("Close"),
+              child: new Text("Tutup"),
               onPressed: () {
-                if (tittle == "Failed") {
+                if (tittle == "Gagal") {
                   Navigator.of(context).pop();
-                } else if (tittle == "Success") {
+                } else if (tittle == "Sukses") {
                   Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
@@ -128,7 +128,7 @@ class _DetailHewanScreenState extends State<DetailHewanScreen> {
       );
     } else {
       return new AppBar(
-        title: new Text("Detail Hewan Peliharaan"),
+        title: new Text("detil Hewan Peliharaan"),
       );
     }
   }
@@ -142,7 +142,7 @@ class _DetailHewanScreenState extends State<DetailHewanScreen> {
                   height: 100.0,
                   child: RaisedButton(
                     onPressed: getImage,
-                    child: Text('Pick Image'),
+                    child: Text('Ambil Gambar'),
                   ))
               : new Container(
                   height: 100.0,
@@ -155,7 +155,7 @@ class _DetailHewanScreenState extends State<DetailHewanScreen> {
         Container(
           width: double.infinity,
           child: Text(
-            'Pet Name',
+            'Nama Hewan',
             textAlign: TextAlign.start,
             style: TextStyle(
               fontStyle: FontStyle.italic,
@@ -188,7 +188,7 @@ class _DetailHewanScreenState extends State<DetailHewanScreen> {
         Container(
           width: double.infinity,
           child: Text(
-            'Pet Identity',
+            'Identitas Hewan',
             textAlign: TextAlign.start,
             style: TextStyle(
               fontStyle: FontStyle.italic,
@@ -221,7 +221,7 @@ class _DetailHewanScreenState extends State<DetailHewanScreen> {
         Container(
           width: double.infinity,
           child: Text(
-            'Pet Gender',
+            'Jenis Kelamin',
             textAlign: TextAlign.start,
             style: TextStyle(
               fontStyle: FontStyle.italic,
@@ -257,7 +257,7 @@ class _DetailHewanScreenState extends State<DetailHewanScreen> {
         Container(
           width: double.infinity,
           child: Text(
-            'Pet Age',
+            'Umur hewan',
             textAlign: TextAlign.start,
             style: TextStyle(
               fontStyle: FontStyle.italic,
@@ -298,7 +298,7 @@ class _DetailHewanScreenState extends State<DetailHewanScreen> {
         Container(
           width: double.infinity,
           child: Text(
-            'Pet Type',
+            'Tipe Hewan',
             textAlign: TextAlign.start,
             style: TextStyle(
               fontStyle: FontStyle.italic,
@@ -334,7 +334,7 @@ class _DetailHewanScreenState extends State<DetailHewanScreen> {
         Container(
           width: double.infinity,
           child: Text(
-            'Pet Race',
+            'Ras',
             textAlign: TextAlign.start,
             style: TextStyle(
               fontStyle: FontStyle.italic,
@@ -367,7 +367,7 @@ class _DetailHewanScreenState extends State<DetailHewanScreen> {
         Container(
           width: double.infinity,
           child: Text(
-            'Fur Color',
+            'Warna Bulu',
             textAlign: TextAlign.start,
             style: TextStyle(
               fontStyle: FontStyle.italic,
@@ -431,7 +431,7 @@ class _DetailHewanScreenState extends State<DetailHewanScreen> {
             child: new RaisedButton(
               color: Colors.lightBlue,
               child: Text(
-                "Save",
+                "Simpan",
                 style: TextStyle(color: Colors.white),
               ),
               onPressed: _saveData,

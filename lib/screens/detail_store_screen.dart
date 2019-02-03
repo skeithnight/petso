@@ -70,11 +70,11 @@ class _DetailStoreScreenState extends State<DetailStoreScreen> {
           actions: <Widget>[
             // usually buttons at the bottom of the dialog
             new FlatButton(
-              child: new Text("Close"),
+              child: new Text("Tutup"),
               onPressed: () {
-                if (tittle == "Failed") {
+                if (tittle == "Gagal") {
                   Navigator.of(context).pop();
-                } else if (tittle == "Success") {
+                } else if (tittle == "Sukses") {
                   Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
@@ -115,7 +115,7 @@ class _DetailStoreScreenState extends State<DetailStoreScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(
-                  "Store Identity",
+                  "Identitas toko",
                   style: TextStyle(
                     fontSize: 20.0,
                     fontWeight: FontWeight.w700,
@@ -136,7 +136,7 @@ class _DetailStoreScreenState extends State<DetailStoreScreen> {
                 this.storeName = text;
               });
             },
-            decoration: InputDecoration(hintText: "Store name"),
+            decoration: InputDecoration(hintText: "Nama toko"),
           ),
           CommonDivider(),
           SizedBox(
@@ -148,7 +148,7 @@ class _DetailStoreScreenState extends State<DetailStoreScreen> {
                 this.siup = text;
               });
             },
-            decoration: InputDecoration(hintText: "SIUP number"),
+            decoration: InputDecoration(hintText: "Nomor SIUP"),
           ),
           CommonDivider(),
           SizedBox(
@@ -167,7 +167,7 @@ class _DetailStoreScreenState extends State<DetailStoreScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(
-                  "Pick Location",
+                  "Ambil lokasi",
                   style: TextStyle(
                     fontSize: 20.0,
                     fontWeight: FontWeight.w700,
@@ -182,14 +182,14 @@ class _DetailStoreScreenState extends State<DetailStoreScreen> {
                   child: RaisedButton(
                     color: Colors.green,
                     child: Text(
-                      "Store Location",
+                      "Ambil lokasi",
                       style: TextStyle(color: Colors.white),
                     ),
                     onPressed: () {
                       try {
                         _showPlacePicker();
                       } catch (e) {
-                        tampilDialog("Alert", "Failed to load location");
+                        tampilDialog("Alert", "Gagal ambil lokasi");
                       }
                     },
                   ),
@@ -206,7 +206,7 @@ class _DetailStoreScreenState extends State<DetailStoreScreen> {
                           controller: addressTokoController,
                           keyboardType: TextInputType.multiline,
                           maxLines: 5,
-                          decoration: InputDecoration(hintText: 'address'),
+                          decoration: InputDecoration(hintText: 'Alamat'),
                         ),
                 ),
               ],
@@ -223,7 +223,7 @@ class _DetailStoreScreenState extends State<DetailStoreScreen> {
             child: new RaisedButton(
               color: Colors.lightBlue,
               child: Text(
-                "Save",
+                "Simpan",
                 style: TextStyle(color: Colors.white),
               ),
               onPressed: _saveData,
@@ -241,7 +241,7 @@ class _DetailStoreScreenState extends State<DetailStoreScreen> {
       setState(() {
         isLoadingSubmitData = false;
       });
-      tampilDialog("Failed", "Field data can't empty");
+      tampilDialog("Gagal", "Data tidak boleh ada yang kosong!");
     } else {
       mainReference.child("store").child(id).set({
         "namaToko":storeName,
@@ -252,9 +252,9 @@ class _DetailStoreScreenState extends State<DetailStoreScreen> {
           "address": _place.address
         }
       }).then((response) {
-        tampilDialog("Success", "Your data has been save");
+        tampilDialog("Sukses", "Data berhasil di simpan...");
       }).catchError((onError) {
-        tampilDialog("Failed", onError.toString());
+        tampilDialog("Gagal", onError.toString());
       });
     }
   }
@@ -264,7 +264,7 @@ class _DetailStoreScreenState extends State<DetailStoreScreen> {
     return MaterialApp(
       home: Scaffold(
         appBar: new AppBar(
-          title: new Text(widget.level + " Store"),
+          title: new Text(widget.level + " Toko"),
         ),
         body: Column(
           mainAxisSize: MainAxisSize.max,

@@ -190,7 +190,7 @@ class _StoreScreenState extends State<StoreScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(
-                  "Product list",
+                  "List Produk",
                   style: TextStyle(
                     fontSize: 20.0,
                     fontWeight: FontWeight.w700,

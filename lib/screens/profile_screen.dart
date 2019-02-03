@@ -76,7 +76,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               Container(
                 width: double.infinity,
                 child: Text(
-                  'Name',
+                  'Nama',
                   textAlign: TextAlign.start,
                   style: TextStyle(
                     fontStyle: FontStyle.italic,
@@ -138,7 +138,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               Container(
                 width: double.infinity,
                 child: Text(
-                  'Phone Number',
+                  'Nomor Telepon',
                   textAlign: TextAlign.start,
                   style: TextStyle(
                     fontStyle: FontStyle.italic,
@@ -186,7 +186,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             child: new RaisedButton(
               color: Colors.lightGreen,
               child: Text(
-                "Edit Data",
+                "Ubah data",
                 style: TextStyle(color: Colors.white),
               ),
               onPressed: pushEditData,
@@ -204,7 +204,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             child: new RaisedButton(
               color: Colors.blue,
               child: Text(
-                "Store Management",
+                "Kelola data toko",
                 style: TextStyle(color: Colors.white),
               ),
               onPressed: () {
@@ -227,7 +227,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             child: new RaisedButton(
               color: Colors.orange,
               child: Text(
-                "Pet Management",
+                "Kelola data hewan peliharaan",
                 style: TextStyle(color: Colors.white),
               ),
               onPressed: () {
@@ -316,7 +316,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: new AppBar(
-        title: new Text("Profile"),
+        title: new Text("Profil"),
       ),
       body: Column(
         mainAxisSize: MainAxisSize.max,

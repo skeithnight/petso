@@ -48,22 +48,11 @@ class MainScreen extends StatelessWidget {
                 Icons.person,
                 color: Colors.black,
               ),
-              text: "Profile"),
+              text: "Profil"),
         ],
       );
   Widget appBar() => new AppBar(
         title: Text(data.appName),
-        // actions: <Widget>[
-        //   IconButton(
-        //     icon: Icon(
-        //       Icons.exit_to_app,
-        //       color: Colors.white,
-        //     ),
-        //     onPressed: () {
-        //       _signOut();
-        //     },
-        //   )
-        // ],
       );
   @override
   Widget build(BuildContext context) {

@@ -43,17 +43,14 @@ class _ListProductScreenState extends State<ListProductScreen> {
           } else {
             if (snapshot.hasData) {
               listProduct = new List();
-              Map<dynamic, dynamic> map = snapshot.data.snapshot.value;
-              List<dynamic> list2 = map.keys.toList();
-              List<dynamic> list = map.values.toList();
-              for (var i = 0; i < list.length; i++) {
-                listProduct
-                    .add(new ProductModel.fromSnapshot(list[i], list2[i]));
-              }
-              if (listProduct.length == 0) {
-                return new Center(
-                  child: Text("kosong"),
-                );
+              if (snapshot.data.snapshot.value != null) {
+                Map<dynamic, dynamic> map = snapshot.data.snapshot.value;
+                List<dynamic> list2 = map.keys.toList();
+                List<dynamic> list = map.values.toList();
+                for (var i = 0; i < list.length; i++) {
+                  listProduct
+                      .add(new ProductModel.fromSnapshot(list[i], list2[i]));
+                }
               }
               return showListData();
             }
@@ -76,7 +73,7 @@ class _ListProductScreenState extends State<ListProductScreen> {
                     Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) =>
                             DetailProductScreen('edit', listProduct[index])));
-                  }else{
+                  } else {
                     Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) =>
                             DetailProductScreen('Detail', listProduct[index])));
@@ -107,7 +104,7 @@ class _ListProductScreenState extends State<ListProductScreen> {
     if (widget.level == "store-management") {
       return Scaffold(
         appBar: new AppBar(
-          title: new Text("List Product"),
+          title: new Text("Daftar Produk"),
         ),
         body: Center(
             child: Container(

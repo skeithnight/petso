@@ -87,11 +87,11 @@ class _TambahPacakScreenState extends State<TambahPacakScreen> {
           actions: <Widget>[
             // usually buttons at the bottom of the dialog
             new FlatButton(
-              child: new Text("Close"),
+              child: new Text("Tutup"),
               onPressed: () {
-                if (tittle == "Failed") {
+                if (tittle == "Gagal") {
                   Navigator.of(context).pop();
-                } else if (tittle == "Success") {
+                } else if (tittle == "Sukses") {
                   Navigator.pushReplacement(context,
                       MaterialPageRoute(builder: (context) => MainScreen()));
                 }
@@ -198,7 +198,7 @@ class _TambahPacakScreenState extends State<TambahPacakScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(
-                  "Choice your pet",
+                  "Pilih hewan",
                   style: TextStyle(
                     fontSize: 20.0,
                     fontWeight: FontWeight.w700,
@@ -224,7 +224,7 @@ class _TambahPacakScreenState extends State<TambahPacakScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(
-                  "Pick Location",
+                  "Ambil lokasi",
                   style: TextStyle(
                     fontSize: 20.0,
                     fontWeight: FontWeight.w700,
@@ -239,14 +239,14 @@ class _TambahPacakScreenState extends State<TambahPacakScreen> {
                   child: RaisedButton(
                     color: Colors.green,
                     child: Text(
-                      "Pick Location",
+                      "Ambil lokasi",
                       style: TextStyle(color: Colors.white),
                     ),
                     onPressed: () {
                       try {
                         _showPlacePicker();
                       } catch (e) {
-                        tampilDialog("Alert", "Failed to load location");
+                        tampilDialog("Alert", "Gagal ambil lokasi!");
                       }
                     },
                   ),
@@ -274,7 +274,7 @@ class _TambahPacakScreenState extends State<TambahPacakScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(
-                  "Phone Number",
+                  "Nomor Telepon",
                   style: TextStyle(
                     fontSize: 20.0,
                     fontWeight: FontWeight.w700,
@@ -294,7 +294,7 @@ class _TambahPacakScreenState extends State<TambahPacakScreen> {
                         });
                       },
                       decoration: InputDecoration(
-                        hintText: "Phone Number",
+                        hintText: "Nomor Telepon",
                         prefix: Text("+62"),
                         contentPadding: new EdgeInsets.all(5.0),
                         hintStyle: TextStyle(color: Colors.black),
@@ -335,7 +335,7 @@ class _TambahPacakScreenState extends State<TambahPacakScreen> {
       setState(() {
         isLoadingSubmitData = false;
       });
-      tampilDialog("Failed", "Data location or pet is empty");
+      tampilDialog("Failed", "Data lokasi atau hewan kosong!");
     } else {
       mainReference.child("pacak").push().set({
         "users": id,
@@ -347,9 +347,9 @@ class _TambahPacakScreenState extends State<TambahPacakScreen> {
           "address": _place.address
         }
       }).then((response) {
-        tampilDialog("Success", "Your data has been save");
+        tampilDialog("Sukses", "Data berhasil di simpan...");
       }).catchError((onError) {
-        tampilDialog("Failed", onError.toString());
+        tampilDialog("Gagal", onError.toString());
       });
     }
   }
@@ -364,7 +364,7 @@ class _TambahPacakScreenState extends State<TambahPacakScreen> {
             child: new RaisedButton(
               color: Colors.lightBlue,
               child: Text(
-                "Save",
+                "Simpan",
                 style: TextStyle(color: Colors.white),
               ),
               onPressed: _saveData,

@@ -255,7 +255,7 @@ class _KawinScreenState extends State<KawinScreen> {
                         onPressed: () {
                           _launchURL(pacakmodel.phoneNumber);
                         },
-                        child: new Text("Call me")),
+                        child: new Text("Telpon saya")),
                   )),
               pacakmodel.idUser == id
                   ? Expanded(
@@ -265,7 +265,7 @@ class _KawinScreenState extends State<KawinScreen> {
                             onPressed: () {
                               removeDialog(pacakmodel.idPacak);
                             },
-                            child: new Text("Remove")),
+                            child: new Text("Hapus")),
                       ))
                   : Container(),
             ]),
@@ -290,7 +290,7 @@ class _KawinScreenState extends State<KawinScreen> {
         // return object of type Dialog
         return AlertDialog(
           title: new Text(idPacak),
-          content: new Text("are you sure remove this data?"),
+          content: new Text("Yakin mau hapus data ini?"),
           actions: <Widget>[
             // usually buttons at the bottom of the dialog
             new FlatButton(

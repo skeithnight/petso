@@ -43,8 +43,8 @@ class _StoreManagementScreenState extends State<StoreManagementScreen> {
       builder: (BuildContext context) {
         // return object of type Dialog
         return AlertDialog(
-          title: new Text("Information"),
-          content: new Text("Do you have a pet shop?"),
+          title: new Text("Informasi"),
+          content: new Text("Apakah anda punya petshop?"),
           actions: <Widget>[
             // usually buttons at the bottom of the dialog
             new FlatButton(

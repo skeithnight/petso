@@ -98,13 +98,13 @@ class LoginScreenState extends State<LoginScreen> {
 
         _prefs.commit();
       }
-      Fluttertoast.showToast(msg: "Sign in success");
+      Fluttertoast.showToast(msg: "Login sukses");
       this.setState(() {
         isLoading = false;
       });
       print("Login");
     } else {
-      Fluttertoast.showToast(msg: "Sign in fail");
+      Fluttertoast.showToast(msg: "Login gagal!");
       this.setState(() {
         isLoading = false;
       });
@@ -120,7 +120,7 @@ class LoginScreenState extends State<LoginScreen> {
           child: FlatButton(
               onPressed: handleSignIn,
               child: Text(
-                'SIGN IN WITH GOOGLE',
+                'Login menggunakan akun google',
                 style: TextStyle(fontSize: 16.0),
               ),
               color: Color(0xffdd4b39),

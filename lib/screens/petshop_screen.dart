@@ -119,7 +119,7 @@ class _PetshopScreenState extends State<PetshopScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: new AppBar(
-        title: new Text("List Toko"),
+        title: new Text("Daftar Toko"),
       ),
       body: Center(
           child: Container(

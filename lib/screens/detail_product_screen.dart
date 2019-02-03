@@ -58,7 +58,7 @@ class _DetailProductScreenState extends State<DetailProductScreen> {
         productModel.descriptionProduct == null ||
         productModel.hargaProduct == null) {
       // print(json.encode(_detailHewanModel));
-      tampilDialog("Failed", "Please complete all fill!");
+      tampilDialog("Gagal", "Tolong lengkapi data!");
     } else {
       // print(json.encode(_detailHewanModel));
       if (widget.level == 'add') {
@@ -70,7 +70,7 @@ class _DetailProductScreenState extends State<DetailProductScreen> {
             .push()
             .set(productModel.toJson())
             .then((response) {
-          tampilDialog("Success", "Your data has been save");
+          tampilDialog("Sukses", "Data berhasil di simpan...");
         });
       } else {
         if (productModel.idProduct != null) {
@@ -82,7 +82,7 @@ class _DetailProductScreenState extends State<DetailProductScreen> {
               .child(productModel.idProduct)
               .set(productModel.toJson())
               .then((response) {
-            tampilDialog("Success", "Your data has been save");
+            tampilDialog("Sukses", "Data berhasil di simpan...");
           });
         }
       }
@@ -101,11 +101,11 @@ class _DetailProductScreenState extends State<DetailProductScreen> {
           actions: <Widget>[
             // usually buttons at the bottom of the dialog
             new FlatButton(
-              child: new Text("Close"),
+              child: new Text("Tutup"),
               onPressed: () {
-                if (tittle == "Failed") {
+                if (tittle == "Gagal") {
                   Navigator.of(context).pop();
-                } else if (tittle == "Success") {
+                } else if (tittle == "Sukses") {
                   Navigator.of(context).pop();
                 }
               },
@@ -119,11 +119,11 @@ class _DetailProductScreenState extends State<DetailProductScreen> {
   Widget appbar() {
     if (widget.level == "add") {
       return new AppBar(
-        title: new Text("Add Product"),
+        title: new Text("Tambah produk"),
       );
     } else {
       return new AppBar(
-        title: new Text("Detail Product"),
+        title: new Text("Detil produk"),
       );
     }
   }
@@ -133,12 +133,12 @@ class _DetailProductScreenState extends State<DetailProductScreen> {
         // image
         new Center(
             child: _image == null
-                ? widget.level == "Detail"
+                ? widget.level != "Detail"
                     ? new Container(
                         height: 100.0,
                         child: RaisedButton(
                           onPressed: getImage,
-                          child: Text('Pick Image'),
+                          child: Text('Ambil Gambar'),
                         ))
                     : new Container(
                         height: 100.0,
@@ -155,7 +155,7 @@ class _DetailProductScreenState extends State<DetailProductScreen> {
         Container(
           width: double.infinity,
           child: Text(
-            'Product Name',
+            'Nama produk',
             textAlign: TextAlign.start,
             style: TextStyle(
               fontStyle: FontStyle.italic,
@@ -168,7 +168,7 @@ class _DetailProductScreenState extends State<DetailProductScreen> {
           child: Theme(
             data: Theme.of(context).copyWith(),
             child: TextField(
-              enabled: widget.level == "Detail" ? true : false,
+              enabled: widget.level != "Detail" ? true : false,
               onChanged: (text) {
                 setState(() {
                   this.productModel.namaProduct = text;
@@ -189,7 +189,7 @@ class _DetailProductScreenState extends State<DetailProductScreen> {
         Container(
           width: double.infinity,
           child: Text(
-            'Product Type',
+            'Tipe produk',
             textAlign: TextAlign.start,
             style: TextStyle(
               fontStyle: FontStyle.italic,
@@ -202,7 +202,7 @@ class _DetailProductScreenState extends State<DetailProductScreen> {
           width: double.infinity,
           child: Theme(
               data: Theme.of(context).copyWith(),
-              child: widget.level == "Detail"
+              child: widget.level != "Detail"
                   ? new DropdownButton<String>(
                       value: this.productModel.typeProduct == null
                           ? 'Select product type'
@@ -240,7 +240,7 @@ class _DetailProductScreenState extends State<DetailProductScreen> {
         Container(
           width: double.infinity,
           child: Text(
-            'Description',
+            'Deskripsi',
             textAlign: TextAlign.start,
             style: TextStyle(
               fontStyle: FontStyle.italic,
@@ -254,7 +254,7 @@ class _DetailProductScreenState extends State<DetailProductScreen> {
           child: Theme(
             data: Theme.of(context).copyWith(),
             child: TextField(
-              enabled: widget.level == "Detail" ? true : false,
+              enabled: widget.level != "Detail" ? true : false,
               maxLines: 5,
               keyboardType: TextInputType.multiline,
               onChanged: (text) {
@@ -277,7 +277,7 @@ class _DetailProductScreenState extends State<DetailProductScreen> {
         Container(
           width: double.infinity,
           child: Text(
-            'Price',
+            'Harga',
             textAlign: TextAlign.start,
             style: TextStyle(
               fontStyle: FontStyle.italic,
@@ -290,7 +290,7 @@ class _DetailProductScreenState extends State<DetailProductScreen> {
           child: Theme(
             data: Theme.of(context).copyWith(),
             child: TextField(
-              enabled: widget.level == "Detail" ? true : false,
+              enabled: widget.level != "Detail" ? true : false,
               keyboardType: TextInputType.number,
               onChanged: (text) {
                 setState(() {
@@ -344,7 +344,7 @@ class _DetailProductScreenState extends State<DetailProductScreen> {
             child: new RaisedButton(
               color: Colors.lightBlue,
               child: Text(
-                "Save",
+                "Simpan",
                 style: TextStyle(color: Colors.white),
               ),
               onPressed: _saveData,
