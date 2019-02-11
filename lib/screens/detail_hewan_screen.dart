@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 import 'package:petso/models/detail_hewan_model.dart';
 import 'kelola_hewan_screen.dart';
@@ -45,6 +46,7 @@ class _DetailHewanScreenState extends State<DetailHewanScreen> {
 
   Future getImage() async {
     var image = await ImagePicker.pickImage(source: ImageSource.gallery);
+    print(image.path);
 
     setState(() {
       _image = image;
@@ -65,6 +67,10 @@ class _DetailHewanScreenState extends State<DetailHewanScreen> {
       // print(json.encode(_detailHewanModel));
       if (widget.level == 'add') {
         // print('addd');
+        final StorageReference firebaseStorageRef =
+                  FirebaseStorage.instance.ref().child(_detailHewanModel.petName+new DateTime.now().toString());
+              final StorageUploadTask task =
+                  firebaseStorageRef.putFile(_image);
         mainReference
             .child("users")
             .child(id)
@@ -77,6 +83,10 @@ class _DetailHewanScreenState extends State<DetailHewanScreen> {
       } else {
         if (_detailHewanModel.idPet != null) {
           // print('edit');
+        final StorageReference firebaseStorageRef =
+                  FirebaseStorage.instance.ref().child(_detailHewanModel.petName+new DateTime.now().toString());
+              final StorageUploadTask task =
+                  firebaseStorageRef.putFile(_image);
           mainReference
               .child("users")
               .child(id)

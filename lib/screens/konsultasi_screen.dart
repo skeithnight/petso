@@ -122,8 +122,9 @@ class _KonsultasiScreenState extends State<KonsultasiScreen> {
           : StreamBuilder(
               stream: FirebaseDatabase.instance
                   .reference()
-                  .child("messages")
+                  .child("users")
                   .child(groupChatId)
+                  .child("messages")
                   .orderByChild("timestamp")
                   .onValue,
               builder: (context, snapshot) {
@@ -220,8 +221,9 @@ class _KonsultasiScreenState extends State<KonsultasiScreen> {
 
       var documentReference = FirebaseDatabase.instance
           .reference()
-          .child('messages')
+          .child("users")
           .child(groupChatId)
+          .child("messages")
           .push()
           .set({
         "content": content,

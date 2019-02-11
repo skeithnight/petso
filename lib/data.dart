@@ -1,2 +1,2 @@
 var appName = "Petso";
-var apiGooglemaps = "api-key";
+var apiGooglemaps = "AIzaSyDR0xxlGtNBDJX-cavRub86SOtSl55xu7c";
