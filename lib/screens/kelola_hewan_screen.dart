@@ -55,7 +55,7 @@ class _KelolaHewanScreenState extends State<KelolaHewanScreen> {
               // print(json.encode(listDetailHewan));
               return showListData();
             }
-            print("Kosong");
+            // print("Kosong");
             return new Center(
               child: Text("kosong"),
             );
@@ -70,9 +70,10 @@ class _KelolaHewanScreenState extends State<KelolaHewanScreen> {
               elevation: 5.0,
               child: ListTile(
                 onTap: () {
-                  print(json.encode(listDetailHewan[index]));
+                  // print(json.encode(listDetailHewan[index]));
                   Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => DetailHewanScreen('Detail',listDetailHewan[index])));
+                      builder: (context) =>
+                          DetailHewanScreen('Detail', listDetailHewan[index])));
                 },
                 leading: Container(
                   width: 50.0,
@@ -81,8 +82,11 @@ class _KelolaHewanScreenState extends State<KelolaHewanScreen> {
                     shape: BoxShape.circle,
                     image: new DecorationImage(
                       fit: BoxFit.fill,
-                      image: new NetworkImage(
-                          'https://www.akc.org/wp-content/themes/akc/component-library/assets//img/welcome.jpg'),
+                      image: listDetailHewan[index].photoUrlPet == null
+                          ? new NetworkImage(
+                              'https://www.akc.org/wp-content/themes/akc/component-library/assets//img/welcome.jpg')
+                          : new NetworkImage(
+                              listDetailHewan[index].photoUrlPet),
                     ),
                   ),
                 ),
@@ -108,8 +112,7 @@ class _KelolaHewanScreenState extends State<KelolaHewanScreen> {
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) =>
-                      DetailHewanScreen('add', null)));
+                  builder: (context) => DetailHewanScreen('add', null)));
         },
         tooltip: 'Increment',
         child: Icon(Icons.add),

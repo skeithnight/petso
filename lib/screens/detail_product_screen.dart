@@ -6,9 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 import 'package:petso/models/product_model.dart';
-import 'kelola_hewan_screen.dart';
+import 'main_screen.dart';
 
 class DetailProductScreen extends StatefulWidget {
   ProductModel _productModel;
@@ -20,6 +21,8 @@ class DetailProductScreen extends StatefulWidget {
 class _DetailProductScreenState extends State<DetailProductScreen> {
   ProductModel productModel = new ProductModel();
   bool isLoading = false;
+  bool isLoadingSaving = false;
+  bool isGetImage = false;
   File _image;
   String id;
 
@@ -44,11 +47,25 @@ class _DetailProductScreenState extends State<DetailProductScreen> {
     // print(isLoading);
   }
 
+  Future<Null> uploadImage(var imageFile) async {
+    StorageReference ref =
+        FirebaseStorage.instance.ref().child("$id ${productModel.namaProduct}");
+    StorageUploadTask uploadTask = ref.putFile(imageFile);
+
+    var dowurl = await (await uploadTask.onComplete).ref.getDownloadURL();
+    String url = dowurl.toString();
+    print(url);
+    setState(() {
+      productModel.photoURLProduct = url;
+    });
+  }
+
   Future getImage() async {
     var image = await ImagePicker.pickImage(source: ImageSource.gallery);
 
     setState(() {
       _image = image;
+      isGetImage = true;
     });
   }
 
@@ -86,6 +103,8 @@ class _DetailProductScreenState extends State<DetailProductScreen> {
           });
         }
       }
+      Navigator.of(context)
+          .push(MaterialPageRoute(builder: (context) => MainScreen()));
     }
   }
 
@@ -128,29 +147,37 @@ class _DetailProductScreenState extends State<DetailProductScreen> {
     }
   }
 
+  Widget showImage() {
+    if (isGetImage) {
+      return new Container(
+          height: 100.0,
+          child: InkWell(
+            child: Image.file(_image),
+            onTap: getImage,
+          ));
+    } else {
+      if (productModel.photoURLProduct != null) {
+        return Container(
+            height: 100.0,
+            child: InkWell(
+              child: Image.network(productModel.photoURLProduct),
+              onTap: getImage,
+            ));
+      } else {
+        return Container(
+            height: 100.0,
+            child: RaisedButton(
+              onPressed: getImage,
+              child: Text('Ambil Gambar'),
+            ));
+      }
+    }
+  }
+
   Widget inputContent() =>
       Column(mainAxisSize: MainAxisSize.max, children: <Widget>[
         // image
-        new Center(
-            child: _image == null
-                ? widget.level != "Detail"
-                    ? new Container(
-                        height: 100.0,
-                        child: RaisedButton(
-                          onPressed: getImage,
-                          child: Text('Ambil Gambar'),
-                        ))
-                    : new Container(
-                        height: 100.0,
-                        child: Image.network(
-                            "https://shop-cdn-m.shpp.ext.zooplus.io/bilder/royal/canin/maxi/adult/8/400/80729_pla_royalcanin_maxiadult_15kg_hs_01_8.jpg"),
-                      )
-                : new Container(
-                    height: 100.0,
-                    child: InkWell(
-                      child: Image.file(_image),
-                      onTap: getImage,
-                    ))),
+        new Center(child: showImage()),
         // name
         Container(
           width: double.infinity,
@@ -347,7 +374,18 @@ class _DetailProductScreenState extends State<DetailProductScreen> {
                 "Simpan",
                 style: TextStyle(color: Colors.white),
               ),
-              onPressed: _saveData,
+              onPressed: () {
+                setState(() {
+                  isLoadingSaving = !isLoadingSaving;
+                });
+                if (isGetImage) {
+                  uploadImage(_image).then((onValue) {
+                    _saveData();
+                  });
+                } else {
+                  _saveData();
+                }
+              },
             ),
           ),
         ),
@@ -380,7 +418,16 @@ class _DetailProductScreenState extends State<DetailProductScreen> {
           ),
           Expanded(
             flex: 1,
-            child: widget.level == "add"||widget.level == "edit" ? saveButton() : Container(),
+            child: widget.level == "add" || widget.level == "edit"
+                ? isLoadingSaving
+                    ? Container(
+                        child: Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                        color: Colors.white.withOpacity(0.8),
+                      )
+                    : saveButton()
+                : Container(),
           ),
         ],
       ),

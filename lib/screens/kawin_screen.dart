@@ -106,7 +106,7 @@ class _KawinScreenState extends State<KawinScreen> {
               elevation: 5.0,
               child: ListTile(
                   onTap: () {
-                    print(id+" : "+ listPacakModel[index].idPacak);
+                    print(id + " : " + listPacakModel[index].idPacak);
                     _modalBottomSheet(listPacakModel[index]);
                   },
                   leading: Container(
@@ -116,8 +116,15 @@ class _KawinScreenState extends State<KawinScreen> {
                       shape: BoxShape.circle,
                       image: new DecorationImage(
                         fit: BoxFit.fill,
-                        image: new NetworkImage(
-                            'https://www.akc.org/wp-content/themes/akc/component-library/assets//img/welcome.jpg'),
+                        image: listPacakModel[index]
+                                    .detailHewanModel
+                                    .photoUrlPet ==
+                                null
+                            ? new NetworkImage(
+                                'https://www.akc.org/wp-content/themes/akc/component-library/assets//img/welcome.jpg')
+                            : new NetworkImage(listPacakModel[index]
+                                .detailHewanModel
+                                .photoUrlPet),
                       ),
                     ),
                   ),

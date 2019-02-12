@@ -21,8 +21,12 @@ class DetailHewanScreen extends StatefulWidget {
 class _DetailHewanScreenState extends State<DetailHewanScreen> {
   DetailHewanModel _detailHewanModel = new DetailHewanModel();
   bool isLoading = false;
+  bool isLoadingSaving = false;
+  bool isGetImage = false;
   File _image;
   String id;
+  StorageReference firebaseStorageRef;
+  var uri = null;
 
   SharedPreferences prefs;
   final mainReference = FirebaseDatabase.instance.reference();
@@ -46,10 +50,25 @@ class _DetailHewanScreenState extends State<DetailHewanScreen> {
 
   Future getImage() async {
     var image = await ImagePicker.pickImage(source: ImageSource.gallery);
-    print(image.path);
+    // print(image.path);
 
     setState(() {
       _image = image;
+      isGetImage = true;
+    });
+  }
+
+  Future<Null> uploadImage(var imageFile) async {
+    StorageReference ref = FirebaseStorage.instance
+        .ref()
+        .child("$id ${_detailHewanModel.petName}");
+    StorageUploadTask uploadTask = ref.putFile(imageFile);
+
+    var dowurl = await (await uploadTask.onComplete).ref.getDownloadURL();
+    String url = dowurl.toString();
+    print(url);
+    setState(() {
+      _detailHewanModel.photoUrlPet = url;
     });
   }
 
@@ -64,13 +83,7 @@ class _DetailHewanScreenState extends State<DetailHewanScreen> {
       // print(json.encode(_detailHewanModel));
       tampilDialog("Gagal", "Tolong lengkapi data!");
     } else {
-      // print(json.encode(_detailHewanModel));
       if (widget.level == 'add') {
-        // print('addd');
-        final StorageReference firebaseStorageRef =
-                  FirebaseStorage.instance.ref().child(_detailHewanModel.petName+new DateTime.now().toString());
-              final StorageUploadTask task =
-                  firebaseStorageRef.putFile(_image);
         mainReference
             .child("users")
             .child(id)
@@ -82,11 +95,6 @@ class _DetailHewanScreenState extends State<DetailHewanScreen> {
         });
       } else {
         if (_detailHewanModel.idPet != null) {
-          // print('edit');
-        final StorageReference firebaseStorageRef =
-                  FirebaseStorage.instance.ref().child(_detailHewanModel.petName+new DateTime.now().toString());
-              final StorageUploadTask task =
-                  firebaseStorageRef.putFile(_image);
           mainReference
               .child("users")
               .child(id)
@@ -143,24 +151,37 @@ class _DetailHewanScreenState extends State<DetailHewanScreen> {
     }
   }
 
+  Widget showImage() {
+    if (isGetImage) {
+      return new Container(
+          height: 100.0,
+          child: InkWell(
+            child: Image.file(_image),
+            onTap: getImage,
+          ));
+    } else {
+      if (_detailHewanModel.photoUrlPet != null) {
+        return Container(
+            height: 100.0,
+            child: InkWell(
+              child: Image.network(_detailHewanModel.photoUrlPet),
+              onTap: getImage,
+            ));
+      } else {
+        return Container(
+            height: 100.0,
+            child: RaisedButton(
+              onPressed: getImage,
+              child: Text('Ambil Gambar'),
+            ));
+      }
+    }
+  }
+
   Widget inputContent() =>
       Column(mainAxisSize: MainAxisSize.max, children: <Widget>[
         // image
-        new Center(
-          child: _image == null
-              ? new Container(
-                  height: 100.0,
-                  child: RaisedButton(
-                    onPressed: getImage,
-                    child: Text('Ambil Gambar'),
-                  ))
-              : new Container(
-                  height: 100.0,
-                  child: InkWell(
-                    child: Image.file(_image),
-                    onTap: getImage,
-                  )),
-        ),
+        new Center(child: showImage()),
         // pet name
         Container(
           width: double.infinity,
@@ -444,7 +465,18 @@ class _DetailHewanScreenState extends State<DetailHewanScreen> {
                 "Simpan",
                 style: TextStyle(color: Colors.white),
               ),
-              onPressed: _saveData,
+              onPressed: () {
+                setState(() {
+                  isLoadingSaving = !isLoadingSaving;
+                });
+                if (isGetImage) {
+                  uploadImage(_image).then((onValue) {
+                    _saveData();
+                  });
+                } else {
+                  _saveData();
+                }
+              },
             ),
           ),
         ),
@@ -477,7 +509,14 @@ class _DetailHewanScreenState extends State<DetailHewanScreen> {
           ),
           Expanded(
             flex: 1,
-            child: saveButton(),
+            child: isLoadingSaving
+                ? Container(
+                    child: Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                    color: Colors.white.withOpacity(0.8),
+                  )
+                : saveButton(),
           ),
         ],
       ),

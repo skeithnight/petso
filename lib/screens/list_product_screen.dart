@@ -17,53 +17,65 @@ class ListProductScreen extends StatefulWidget {
 }
 
 class _ListProductScreenState extends State<ListProductScreen> {
+  TextEditingController editingController = TextEditingController();
+  final duplicateItems = List<String>.generate(10000, (i) => "Item $i");
+
   SharedPreferences prefs;
-  List<ProductModel> listProduct;
+  List<ProductModel> listProductOrigin = new List();
+  List<ProductModel> listProduct = new List();
   final formatCurrency = new NumberFormat.simpleCurrency(locale: "IDR");
 
   void initState() {
     super.initState();
-    print(widget.level);
-    print(widget.id);
+    getData();
   }
 
-  Widget listDataProductWidget() {
-    return StreamBuilder<Event>(
-        stream: FirebaseDatabase.instance
-            .reference()
-            .child("store")
-            .child(widget.id)
-            .child("product")
-            .onValue,
-        builder: (BuildContext context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return new Center(
-              child: CircularProgressIndicator(),
-            );
-          } else {
-            if (snapshot.hasData) {
-              listProduct = new List();
-              if (snapshot.data.snapshot.value != null) {
-                Map<dynamic, dynamic> map = snapshot.data.snapshot.value;
-                List<dynamic> list2 = map.keys.toList();
-                List<dynamic> list = map.values.toList();
-                for (var i = 0; i < list.length; i++) {
-                  listProduct
-                      .add(new ProductModel.fromSnapshot(list[i], list2[i]));
-                }
-              }
-              return showListData();
-            }
-            // print("Kosong");
-            return new Center(
-              child: Text("kosong"),
-            );
-          }
-        });
+  Future<Null> getData() async {
+    final response = await FirebaseDatabase.instance
+        .reference()
+        .child("store")
+        .child(widget.id)
+        .child("product")
+        .once();
+    listProductOrigin = new List();
+    if (response.value != null) {
+      Map<dynamic, dynamic> map = response.value;
+      List<dynamic> list2 = map.keys.toList();
+      List<dynamic> list = map.values.toList();
+      for (var i = 0; i < list.length; i++) {
+        listProductOrigin.add(new ProductModel.fromSnapshot(list[i], list2[i]));
+      }
+    }
+    // listProduct = listProductOrigin;
+    setState(() {
+      listProduct.addAll(listProductOrigin);
+    });
+    print("bbbbb : ${listProductOrigin.length}");
+  }
+
+  Widget contentListData() {
+    return Column(
+      children: <Widget>[
+        TextField(
+          onChanged: (value) {
+            filterSearchResults(value);
+          },
+          controller: editingController,
+          decoration: InputDecoration(
+              labelText: "Search",
+              hintText: "Search",
+              prefixIcon: Icon(Icons.search),
+              border: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(25.0)))),
+        ),
+        Expanded(child: showListData()),
+      ],
+    );
   }
 
   Widget showListData() {
     return ListView.builder(
+        shrinkWrap: true,
         itemCount: listProduct.length,
         itemBuilder: (BuildContext context, int index) => Card(
               elevation: 5.0,
@@ -86,8 +98,11 @@ class _ListProductScreenState extends State<ListProductScreen> {
                     shape: BoxShape.circle,
                     image: new DecorationImage(
                       fit: BoxFit.fill,
-                      image: new NetworkImage(
-                          'https://shop-cdn-m.shpp.ext.zooplus.io/bilder/royal/canin/maxi/adult/8/400/80729_pla_royalcanin_maxiadult_15kg_hs_01_8.jpg'),
+                      image: listProduct[index].photoURLProduct == null
+                          ? new NetworkImage(
+                              'https://shop-cdn-m.shpp.ext.zooplus.io/bilder/royal/canin/maxi/adult/8/400/80729_pla_royalcanin_maxiadult_15kg_hs_01_8.jpg')
+                          : new NetworkImage(
+                              listProduct[index].photoURLProduct),
                     ),
                   ),
                 ),
@@ -99,6 +114,30 @@ class _ListProductScreenState extends State<ListProductScreen> {
             ));
   }
 
+  void filterSearchResults(String query) {
+    List<ProductModel> dummySearchList = List<ProductModel>();
+    dummySearchList.addAll(listProductOrigin);
+    if (query.isNotEmpty) {
+      List<ProductModel> dummyListData = List<ProductModel>();
+      dummySearchList.forEach((item) {
+        if (item.namaProduct.toUpperCase().contains(query.toUpperCase())) {
+          dummyListData.add(item);
+        }
+      });
+      setState(() {
+        listProduct.clear();
+        listProduct.addAll(dummyListData);
+      });
+      print("aaa: ${listProduct.length} : ${listProductOrigin.length}");
+      return;
+    } else {
+      setState(() {
+        listProduct.clear();
+        listProduct.addAll(listProductOrigin);
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     if (widget.level == "store-management") {
@@ -108,7 +147,7 @@ class _ListProductScreenState extends State<ListProductScreen> {
         ),
         body: Center(
             child: Container(
-          child: listDataProductWidget(),
+          child: showListData(),
         )),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
@@ -122,10 +161,9 @@ class _ListProductScreenState extends State<ListProductScreen> {
         ),
       );
     } else {
-      // return Center(child: Text(widget.id),);
       return Container(
-        height: 300.0,
-        child: listDataProductWidget(),
+        child: contentListData(),
+        height: 500.0,
       );
     }
   }

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:geolocator/geolocator.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 import 'package:petso/screens/login_screen.dart';
 import 'package:petso/screens/splash_screen.dart';
@@ -16,10 +17,13 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   Position _position;
+  FirebaseMessaging _firebaseMessaging = new FirebaseMessaging();
+  String fcmToken = '';
   @override
   void initState() {
     super.initState();
     _initPlatformState();
+    firebaseCloudMessaging_Listeners();
   }
 
   // Platform messages are asynchronous, so we initialize in an async method.
@@ -52,6 +56,7 @@ class _MyAppState extends State<MyApp> {
             return new SplashScreen();
           } else {
             if (snapshot.hasData) {
+              // return Container();
               return new MainScreen();
             }
             print("Kosong");
@@ -59,7 +64,14 @@ class _MyAppState extends State<MyApp> {
           }
         });
   }
+void firebaseCloudMessaging_Listeners() {
+    // Firebase messaging
+    _firebaseMessaging.subscribeToTopic("rekom3bln");
 
+    _firebaseMessaging.getToken().then((token) {
+      print("Token"+token);
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(

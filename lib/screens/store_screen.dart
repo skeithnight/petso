@@ -228,9 +228,11 @@ class _StoreScreenState extends State<StoreScreen> {
   Widget build(BuildContext context) {
     return MaterialApp(
         home: Scaffold(
-      body: Column(
-        mainAxisSize: MainAxisSize.max,
-        children: <Widget>[mapsLocation(), content()],
+      body: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          children: <Widget>[mapsLocation(), content()],
+        ),
       ),
     ));
   }
